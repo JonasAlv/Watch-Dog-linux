@@ -7,15 +7,14 @@
     into .deps/lib. They are provided by the client at runtime and are not copied next to the plugin.
   -->
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>WatchDog</AssemblyName>
     <RootNamespace>WatchDog</RootNamespace>
     <Version>1.0.0</Version>
     <Product>Watch Dog</Product>
-    <Description>Recovery plugin for Skua and VibeSkua: stuck logins, disconnects, stuck scripts, script restarts and Rescue Allies.</Description>
+    <Description>Linux recovery plugin for VibeSkua: stuck logins, disconnects, stuck scripts, script restarts and Rescue Allies.</Description>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <SkuaLib Condition="'$(SkuaLib)' == ''">$(MSBuildThisFileDirectory)..\.deps\lib</SkuaLib>

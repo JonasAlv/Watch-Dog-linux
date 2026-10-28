@@ -1,10 +1,10 @@
-# Watch Dog
+# Watch Dog Linux
 
-**A recovery plugin for [Skua](https://github.com/auqw/skua) and [VibeSkua](https://github.com/NinjaXz/VibeSkua):
+**A Linux recovery plugin for [VibeSkua](https://github.com/NinjaXz/VibeSkua):
 keeps your accounts logged in and their scripts running while you're away.**
 
-Watch Dog is the in-game part of [VibeSkuffle](https://github.com/Aeoniian/VibeSkuffle)'s watchdog, packaged as a
-normal plugin. It needs no changes to your client: drop one file into the plugins folder.
+Watch Dog is the in-game recovery component from VibeSkuffle, maintained here as a VibeSkua Linux plugin.
+It is loaded as a normal plugin and does not require recovery code to be compiled into the client.
 
 > **Stable release: v1.0.0.** Earlier versions were tested in Skua 1.4.5 and VibeSkua 2.0.2 to 2.0.7 (private rooms): logged-out relog, connection lost,
 > stuck login, stuck script and script restarts (both), Rescue Allies (VibeSkua, and a Skua account rescued by a
@@ -49,8 +49,7 @@ native WPF interaction still need manual validation. See [the changelog](CHANGEL
 
 The same file targets Skua (1.4.5 or newer) and VibeSkua (2.x).
 
-**VibeSkuffle users:** you don't need this. VibeSkuffle has all of it (and more) built in. If the file is in the
-shared plugins folder, Watch Dog notices it's running inside VibeSkuffle and stays off there.
+This fork is for VibeSkua Linux only. Do not load it in VibeSkuffle, which has its own built-in recovery engine.
 
 ---
 
@@ -128,17 +127,17 @@ passwords). Watch Dog keeps the account's login in memory only (never on disk), 
 
 ---
 
-## Building
+## Building on Linux
 
 Needs git and the .NET 10 SDK.
 
 ```
-build.ps1        (Windows)
-./build.sh       (Linux / macOS)
+./build.sh
 ```
 
-The output is `src/bin/Release/net10.0-windows/WatchDog.dll`. Watch Dog is compiled against Skua 1.4.5's interface
-assemblies (the oldest version supported); VibeSkua 2.0.x has everything it uses, so the same file loads in both.
+The output is `src/bin/Release/net10.0/WatchDog.dll`. By default the script uses a sibling `../VibeSkua`
+checkout; set `VIBESKUA_ROOT` to another checkout when needed. The plugin is built against the current
+VibeSkua Linux interface assemblies, so its API and runtime behavior stay aligned with the client.
 Those assemblies aren't stored here: the build script downloads Skua at a fixed commit into `.deps` and builds them.
 
 ---

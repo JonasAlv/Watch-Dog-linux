@@ -48,12 +48,6 @@ public class WatchDogPlugin : ISkuaPlugin
     public void Load(IServiceProvider provider, IPluginHelper helper)
     {
         _helper = helper;
-        if (IsVibeSkuffle())
-        {
-            Log.Write("?", " running inside VibeSkuffle, which has all of this built in; Watch Dog stays off here.");
-            return;
-        }
-
         IScriptInterface? bot = provider.GetService(typeof(IScriptInterface)) as IScriptInterface;
         IScriptManager? manager = provider.GetService(typeof(IScriptManager)) as IScriptManager;
         IPluginManager? plugins = provider.GetService(typeof(IPluginManager)) as IPluginManager;
@@ -92,22 +86,6 @@ public class WatchDogPlugin : ISkuaPlugin
         catch { }
     }
 
-    /// <summary>VibeSkuffle (VibeSkua on Ruffle) has its own built-in watchdog; running both would double up.</summary>
-    private static bool IsVibeSkuffle()
-    {
-        try
-        {
-            string name = Process.GetCurrentProcess().ProcessName;
-            if (name.StartsWith("VibeSkuffle", StringComparison.OrdinalIgnoreCase))
-                return true;
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .Any(a => a.GetName().Name == "Skua.Core.Interfaces" && a.GetType("Skua.Core.Interfaces.IRestartableGamePlayer") is not null);
-        }
-        catch
-        {
-            return false;
-        }
-    }
 }
 
 /// <summary>An option definition (the same shape as Skua's Option&lt;T&gt;, so it works in every client).</summary>
