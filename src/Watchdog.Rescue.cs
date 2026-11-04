@@ -1,4 +1,5 @@
 using Skua.Core.Interfaces;
+using Skua.Core.Models;
 using WatchDog.Shared;
 
 namespace WatchDog;
@@ -21,7 +22,7 @@ internal sealed partial class Watchdog
     private const int RescueGiveUpMs = 20 * 60000;
     private const int RescueCooldownMs = 10 * 60000;
 
-    private static string RescueDir => Environment.GetEnvironmentVariable("WATCHDOG_RESCUE_CALL_ROOT") ?? Path.Combine(Path.GetTempPath(), "VibeSkuaTabs", "rescue");
+    private static string RescueDir => Environment.GetEnvironmentVariable("WATCHDOG_RESCUE_CALL_ROOT") ?? Path.Combine(ClientFileSources.TabsDIR, "rescue");
 
     // The account that needs help.
     private int _rsLastDeaths = -1, _rsLastKills = -1, _rsDeathStreak, _rsStreakSince;

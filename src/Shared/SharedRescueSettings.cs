@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Skua.Core.Models;
 
 namespace WatchDog.Shared;
 
@@ -13,7 +14,7 @@ internal sealed class SharedRescueSettings : IDisposable
     internal static SharedRescueSettings Instance => Default.Value;
     internal static string DefaultPath => Path.Combine(
         Environment.GetEnvironmentVariable("WATCHDOG_SHARED_RESCUE_ROOT") ??
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Skua", "WatchDog"),
+        Path.Combine(ClientFileSources.SkuaPluginsDIR, "WatchDog"),
         "rescue-settings.json");
     private readonly string _path;
     private readonly Mutex _writer;

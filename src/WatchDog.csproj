@@ -12,7 +12,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>WatchDog</AssemblyName>
     <RootNamespace>WatchDog</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Product>Watch Dog</Product>
     <Description>Linux recovery plugin for VibeSkua: stuck logins, disconnects, stuck scripts, script restarts and Rescue Allies.</Description>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
@@ -21,6 +21,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.Versioning.SupportedOSPlatformAttribute">
+      <_Parameter1>linux</_Parameter1>
+    </AssemblyAttribute>
     <Reference Include="Skua.Core.Interfaces">
       <HintPath>$(SkuaLib)\Skua.Core.Interfaces.dll</HintPath>
       <Private>false</Private>
