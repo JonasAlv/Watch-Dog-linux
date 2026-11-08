@@ -28,7 +28,9 @@ internal sealed class SharedRescueSettings : IDisposable
     internal SharedRescueSettings(string path)
     {
         _path = Path.GetFullPath(path);
-        Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
+        string dir = Path.GetDirectoryName(_path)!;
+        Directory.CreateDirectory(dir);
+        ClientFileSources.RestrictDirectoryPermissions(dir);
         string hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(_path.ToUpperInvariant())));
         _writer = new Mutex(false, "WatchDog.RescueSettings." + hash);
         Reload();
@@ -124,7 +126,9 @@ internal sealed class SharedRescueSettings : IDisposable
             try
             {
                 File.WriteAllText(temporary, JsonSerializer.Serialize(after), new UTF8Encoding(false));
+                ClientFileSources.RestrictFilePermissions(temporary);
                 File.Move(temporary, _path, true);
+                ClientFileSources.RestrictFilePermissions(_path);
             }
             finally { if (File.Exists(temporary)) File.Delete(temporary); }
         }
