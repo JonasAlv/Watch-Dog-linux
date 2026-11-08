@@ -1,0 +1,82 @@
+name: Release Watch Dog Linux
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release version tag (e.g. v1.0.3). Leave blank to read Version from WatchDog.csproj'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Release WatchDog.dll
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Watch-Dog-linux
+        uses: actions/checkout@v4
+        with:
+          path: Watch-Dog-linux
+
+      - name: Checkout BonxieMux (Host Assemblies)
+        uses: actions/checkout@v4
+        with:
+          repository: JonasAlv/BonxieMux
+          path: BonxieMux
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Determine Version Tag
+        id: get_version
+        run: |
+          cd Watch-Dog-linux
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          elif [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" src/WatchDog.csproj)
+            TAG="v${VERSION}"
+          fi
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building release for tag: $TAG (version: $VERSION)"
+
+      - name: Build WatchDog.dll
+        run: |
+          cd Watch-Dog-linux
+          chmod +x ./build.sh
+          ./build.sh
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.get_version.outputs.tag }}
+          VERSION: ${{ steps.get_version.outputs.version }}
+        run: |
+          cd Watch-Dog-linux
+          ASSET="src/bin/Release/net10.0/WatchDog.dll"
+          if [ ! -f "$ASSET" ]; then
+            echo "Error: Release asset $ASSET not found!" >&2
+            exit 1
+          fi
+
+          echo "Publishing release $TAG with asset: $ASSET..."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ASSET" --clobber
+          else
+            gh release create "$TAG" "$ASSET" --title "Watch Dog $TAG" --generate-notes
+          fi
+          echo "Release $TAG published successfully!"
